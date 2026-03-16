@@ -28,9 +28,9 @@ function formatNameTooltipHTML(name: string): string {
 export function initStats(nodeCount: number, edgeCount: number) {
   const el = document.getElementById("stats-content")!;
   el.innerHTML = `
-    <span class="stat-pill">${nodeCount.toLocaleString()} people</span>
-    <span class="stat-pill">${(21394).toLocaleString()} documents</span>
-    <span class="stat-pill">${edgeCount.toLocaleString()} connections</span>
+    <div>${nodeCount.toLocaleString()} people</div>
+    <div>21,394 documents</div>
+    <div>${edgeCount.toLocaleString()} connections</div>
   `;
 }
 
