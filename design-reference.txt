@@ -1,0 +1,103 @@
+Design Reference — hellothisisyi.com
+=====================================
+
+FONT
+-----
+Family: AkzidenzGrotesk BQ (loaded as "MainFont")
+Weights: Regular (400), Medium (500)
+Format: TrueType (.ttf)
+Unicode range: U+000-5FF
+font-display: block
+
+Fallback stack: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif
+
+Base font size: 15px on body, responsively scaled via vw units:
+  Mobile (< 768px): font-size: 2vw
+  Tablet/Desktop (>= 768px): font-size: 0.71428vw
+
+Text rendering: optimizeLegibility, -webkit-font-smoothing: antialiased
+
+
+TYPE SCALE (in rem, relative to responsive root)
+-------------------------------------------------
+Site name ("Yi Zheng")    2.125rem   weight 400   color #000000   letter-spacing 0.02125rem
+Hero body text            2.625rem   weight 400   color #4F4F4F   letter-spacing 0.02625rem
+Hero keywords             2.625rem   weight 400   color #000000   letter-spacing 0.02625rem
+Tab bar text              1.5rem     weight 500
+Buttons / pill text       1.5rem     weight 400   color #898989   letter-spacing 0.0125rem
+Card titles               1.1rem     weight 500   color #000000
+Card descriptions         1.1rem     weight 400   color #4F4F4F
+Footer / credit items     1.25rem    weight 400   color #898989
+
+
+COLOR PALETTE (Light Mode)
+---------------------------
+--main-back            #F8F8F8     Page background
+--primary-text         #000000     Headings, titles, keywords
+--secondary-text       #4F4F4F     Body text, descriptions
+--tab-back             #EEEEEE     Tab bar / pill background
+--tab-text             #898989     Inactive tab / button text
+--tab-selected-text    #FFFFFF     Active tab text
+--tab-selected-back    #898989     Active tab pill background
+--tab-label-text       #000000     Navigation label
+--btn-back             #EEEEEE     Button / pill background
+--btn-text             #898989     Button / link text
+
+
+TOP NAVIGATION (Header)
+-------------------------
+Fixed position, top: 0, full width with 1.125rem horizontal padding
+Background: matches --main-back (#F8F8F8)
+Layout: flexbox, justify-content: space-between
+Contains a tab bar (left) and a round button (right)
+
+Tab Bar (.tab-bar):
+  Height: 3.4375rem
+  Background: #EEEEEE with backdrop-filter: blur(20px)
+  Border radius: 1.875rem (pill shape)
+  Padding: 0 0.75rem
+  No border (border: 0px solid #000)
+  Selected indicator: absolute-positioned div, border-radius 1.875rem, background #898989, transition left 0.35s ease
+  Selected tab text: white (#FFFFFF), padding-left 1.5625rem
+  Other tabs: #898989, padding-left 1.875rem
+  Tab items: padding 0.625rem 0.75rem, user-select: none
+
+Round Button (.btn-back, right side):
+  border-radius: 1.875rem
+  Width: 4.5625rem, height: 2.375rem
+  Background: #EEEEEE
+  Contains SVG circle (r=15, fill #F8F8F8) with drop-shadow
+  Transition: background 0.3s ease
+
+
+BOTTOM FOOTER
+--------------
+Flexbox: justify-content: space-between, align-items: end
+Margin bottom: 0.8rem
+Three sections: left (last updated text), middle (Back to top pill), right (Credit/Contact)
+
+Footer Pills (.frame):
+  Background: #EEEEEE
+  Padding: 0.5rem 1rem
+  Border radius: 1.875rem
+  Font: 1.5rem, weight 400, color #898989
+  Cursor: pointer, user-select: none
+
+Credit/Contact Flyouts:
+  Position: absolute, bottom of button
+  Background: #EEEEEE, border-radius 0.8rem
+  Items: padding 1rem, margin 0.5rem 0
+  Appear on hover with opacity transition 0.3s ease
+  Credit flyout width: 20rem, contact: 25rem
+  Link text: color #898989, text-decoration: underline
+  Link hover: background-color: rgba(115, 115, 115, 0.2)
+
+
+GENERAL PATTERNS
+-----------------
+All pill/button shapes: border-radius 1.875rem (30px)
+Image cards: border-radius 0.75rem (12px)
+Transitions: consistently 0.3s ease
+Masonry grid for project cards: column-count 3, column-gap 0.5rem (1 column on mobile)
+Line height: body 1.6, hero text 120%
+Scrollbar: custom styled, width 5px, track #f1f1f1, thumb #888

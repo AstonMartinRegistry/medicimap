@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Medici Graph</title>
+  <script type="module" crossorigin src="/assets/index-qrfOV9Ps.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-C3wl6Yk_.css">
+</head>
+<body>
+
+  <div id="loading">
+    <div class="loading-inner">
+      <div class="loading-title">Medici Graph</div>
+      <div class="loading-status">Loading graph data…</div>
+      <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+    </div>
+  </div>
+
+  <div id="app">
+    <div id="graph-container"></div>
+
+    <div id="tooltip" style="display:none"></div>
+
+    <div id="sidebar">
+      <div id="stats-box">
+        <div id="site-label">Medici Graph</div>
+        <div id="stats-content"></div>
+      </div>
+    </div>
+
+    <div id="search-bar">
+      <div id="search-box">
+        <input id="search-input" type="text" placeholder="Search person…" autocomplete="off" />
+        <svg id="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <div id="search-dropdown"></div>
+      </div>
+    </div>
+
+    <div id="detail-panel">
+      <div class="detail-header">
+        <button id="detail-back">← back</button>
+        <span id="detail-title"></span>
+        <button id="detail-close">✕</button>
+      </div>
+      <div class="detail-body">
+        <div id="detail-meta"></div>
+        <div class="detail-section-title">Connections</div>
+        <div id="detail-connections"></div>
+        <div class="detail-section-title">Documents</div>
+        <div id="detail-docs"></div>
+      </div>
+    </div>
+
+    <div id="footer-credit">Made thanks to the <a href="https://www.medici.org" target="_blank" rel="noopener">Medici Archive Project</a></div>
+  </div>
+
+</body>
+</html>
