@@ -2,7 +2,8 @@ import Graph from "graphology";
 import Sigma from "sigma";
 import type { NodeData, EdgeData } from "./types";
 
-const COLOR_MEDICI = "#8b2020";
+const COLOR_MEDICI =
+  getComputedStyle(document.documentElement).getPropertyValue("--medici-red").trim() || "#6b1818";
 const COLOR_DEFAULT = "#5a5f6a";
 
 /** Hover: circle only, no label (we use our own tooltip) */
@@ -147,7 +148,7 @@ export function setHighlight(state: GraphState, nodeKey: string | null) {
     const src = state.graph.source(edge);
     const tgt = state.graph.target(edge);
     if (src === highlightedNode || tgt === highlightedNode) {
-      return { ...data, size: Math.max(data.size, 40), zIndex: 1 };
+      return { ...data, size: Math.max(data.size, 30), zIndex: 1 };
     }
     return { ...data, color: DIM_EDGE_COLOR, zIndex: 0 };
   });
@@ -169,6 +170,6 @@ export function flyToNode(state: GraphState, nodeKey: string) {
   const camera = state.renderer.getCamera();
   camera.animate(
     { x: nodeDisplayData.x, y: nodeDisplayData.y, ratio: 0.08 },
-    { duration: 400 }
+    { duration: 1000, easing: "cubicInOut" }
   );
 }

@@ -1,5 +1,5 @@
 import "./style.css";
-import { fetchGraphData } from "./data";
+import { fetchGraphData, fetchDocuments } from "./data";
 import { buildGraph } from "./graph";
 import { initStats, initTooltip, initSearch, initDetailPanel } from "./ui";
 
@@ -19,6 +19,26 @@ async function main() {
     setProgress(stage, pct);
   });
 
+  setProgress("Loading documents…", 50);
+  const allDocs = await fetchDocuments();
+
+  const mediciIds = new Set(nodes.filter((n) => n.isMedici).map((n) => n.id));
+  const mediciPeopleCount = mediciIds.size;
+  const mediciEdgeCount = edges.filter(
+    (e) => mediciIds.has(e.source) || mediciIds.has(e.target)
+  ).length;
+
+  const allDocIds = new Set<number>();
+  const mediciDocIds = new Set<number>();
+  for (const e of edges) {
+    const docs = allDocs[String(e.id)] || [];
+    const edgeHasMedici = mediciIds.has(e.source) || mediciIds.has(e.target);
+    for (const d of docs) {
+      if (d.documentId != null) allDocIds.add(d.documentId);
+      if (edgeHasMedici && d.documentId != null) mediciDocIds.add(d.documentId);
+    }
+  }
+
   setProgress("Building graph…", 60);
   await new Promise((r) => requestAnimationFrame(r));
 
@@ -28,7 +48,14 @@ async function main() {
   setProgress("Initializing…", 90);
   await new Promise((r) => requestAnimationFrame(r));
 
-  initStats(nodes.length, edges.length);
+  initStats({
+    nodeCount: nodes.length,
+    mediciPeopleCount,
+    documentCount: allDocIds.size,
+    mediciDocumentCount: mediciDocIds.size,
+    edgeCount: edges.length,
+    mediciEdgeCount,
+  });
   initTooltip(state);
   const { show } = initDetailPanel(state);
   initSearch(state, (nodeId) => show(nodeId));

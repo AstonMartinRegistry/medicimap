@@ -17,21 +17,51 @@ function formatName(name: string): string {
 
 function formatNameTooltipHTML(name: string): string {
   const comma = name.indexOf(",");
-  if (comma === -1) return esc(name);
+  if (comma === -1) return `<span class="tooltip-last">${esc(name)}</span>`;
   const last = esc(name.slice(0, comma).trim());
   const first = esc(name.slice(comma + 1).trim());
+  if (!first) return `<span class="tooltip-last">${last}</span>`;
   return `${first} <span class="tooltip-last">${last}</span>`;
+}
+
+function formatNameDetailHTML(name: string, isMedici: boolean): string {
+  const full = esc(formatName(name));
+  return isMedici ? `<span class="medici-dot"></span> ${full}` : full;
 }
 
 // ─── Stats ───
 
-export function initStats(nodeCount: number, edgeCount: number) {
+export function initStats(stats: {
+  nodeCount: number;
+  mediciPeopleCount: number;
+  documentCount: number;
+  mediciDocumentCount: number;
+  edgeCount: number;
+  mediciEdgeCount: number;
+}) {
   const el = document.getElementById("stats-content")!;
   el.innerHTML = `
-    <div>${nodeCount.toLocaleString()} people</div>
-    <div>21,394 documents</div>
-    <div>${edgeCount.toLocaleString()} connections</div>
+    <div>${stats.nodeCount.toLocaleString()} people <span class="stat-sub">(${stats.mediciPeopleCount.toLocaleString()} Medici)</span></div>
+    <div>${stats.documentCount.toLocaleString()} documents <span class="stat-sub">(${stats.mediciDocumentCount.toLocaleString()} with Medici)</span></div>
+    <div>${stats.edgeCount.toLocaleString()} connections <span class="stat-sub">(${stats.mediciEdgeCount.toLocaleString()} Medici)</span></div>
   `;
+
+  const sidebar = document.getElementById("sidebar")!;
+  const closeBtn = document.getElementById("stats-close")!;
+  const searchBar = document.getElementById("search-bar")!;
+  const footer = document.getElementById("footer-credit")!;
+
+  closeBtn.addEventListener("click", () => {
+    const isCollapsed = sidebar.classList.toggle("collapsed");
+    searchBar.classList.toggle("hidden", isCollapsed);
+    footer.classList.toggle("hidden", isCollapsed);
+    closeBtn.classList.add("no-hover");
+    const remove = () => {
+      closeBtn.classList.remove("no-hover");
+      closeBtn.removeEventListener("mouseleave", remove);
+    };
+    closeBtn.addEventListener("mouseleave", remove);
+  });
 }
 
 // ─── Tooltip ───
@@ -43,8 +73,10 @@ export function initTooltip(state: GraphState) {
     const attrs = state.graph.getNodeAttributes(node);
     const nodeData = state.nodeById.get(Number(node));
     const isMedici = nodeData?.isMedici ?? false;
-    tooltip.innerHTML = formatNameTooltipHTML(attrs.label || `Node ${node}`);
+    const label = attrs.label || `Node ${node}`;
+    tooltip.innerHTML = formatNameTooltipHTML(label);
     tooltip.classList.toggle("medici", isMedici);
+    tooltip.classList.toggle("last-only", !label.includes(",") || !label.slice(label.indexOf(",") + 1).trim());
     tooltip.style.display = "block";
   });
 
@@ -119,8 +151,9 @@ export function initSearch(state: GraphState, onSelect: (nodeId: number) => void
     const id = Number(item.dataset.id);
     const node = state.nodeById.get(id);
     if (node) {
-      input.value = formatName(node.name);
+      input.value = "";
       dropdown.style.display = "none";
+      input.blur();
       flyToNode(state, String(id));
       onSelect(id);
     }
@@ -128,6 +161,11 @@ export function initSearch(state: GraphState, onSelect: (nodeId: number) => void
 }
 
 // ─── Detail Panel ───
+
+function updateScrollFade(el: HTMLElement) {
+  const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 2;
+  el.classList.toggle("at-bottom", atBottom);
+}
 
 export function initDetailPanel(state: GraphState) {
   const panel = document.getElementById("detail-panel")!;
@@ -157,20 +195,21 @@ export function initDetailPanel(state: GraphState) {
       history.push(currentId);
     }
     currentId = nodeId;
-    backBtn.style.display = history.length > 0 ? "block" : "none";
+    backBtn.style.display = history.length > 0 ? "flex" : "none";
 
     setHighlight(state, String(nodeId));
 
-    titleEl.textContent = formatName(node.name);
+    const isMedici = node.isMedici;
+    panel.classList.toggle("medici", isMedici);
+    titleEl.innerHTML = formatNameDetailHTML(node.name, isMedici);
 
-    const metaParts: string[] = [];
     if (node.bornYear || node.deathYear) {
       const b = node.bornYear ?? "?";
       const d = node.deathYear ?? "?";
-      metaParts.push(`${b} – ${d}`);
+      metaEl.textContent = `${b} – ${d}`;
+    } else {
+      metaEl.textContent = "";
     }
-    if (node.isMedici) metaParts.push("Medici family");
-    metaEl.innerHTML = metaParts.join(" · ");
 
     const connEdges = state.edgesByNode.get(nodeId) || [];
     const connMap = new Map<number, { name: string; weight: number; edges: EdgeData[] }>();

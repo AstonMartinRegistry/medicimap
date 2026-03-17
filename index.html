@@ -23,8 +23,11 @@
 
     <div id="sidebar">
       <div id="stats-box">
-        <div id="site-label">Medici Graph</div>
-        <div id="stats-content"></div>
+        <div id="stats-main">
+          <div id="site-label"><span class="medici-dot"></span> Medici Graph</div>
+          <div id="stats-content"></div>
+        </div>
+        <div id="stats-close"></div>
       </div>
     </div>
 
@@ -38,12 +41,14 @@
 
     <div id="detail-panel">
       <div class="detail-header">
-        <button id="detail-back">← back</button>
-        <span id="detail-title"></span>
-        <button id="detail-close">✕</button>
+        <div class="detail-nav">
+          <button id="detail-back">←</button>
+          <button id="detail-close">✕</button>
+        </div>
+        <div id="detail-title"></div>
+        <div id="detail-meta"></div>
       </div>
       <div class="detail-body">
-        <div id="detail-meta"></div>
         <div class="detail-section-title">Connections</div>
         <div id="detail-connections"></div>
         <div class="detail-section-title">Documents</div>
