@@ -125,7 +125,9 @@ let highlightedNeighbors: Set<string> | null = null;
 const DIM_NODE_COLOR = "#383838";
 const DIM_EDGE_COLOR = "rgb(40, 40, 40)";
 
-const isMobile = () => window.matchMedia("(max-width: 768px)").matches;
+let _isMobile = window.matchMedia("(max-width: 768px)").matches;
+window.matchMedia("(max-width: 768px)").addEventListener("change", (e) => { _isMobile = e.matches; });
+const isMobile = () => _isMobile;
 const MOBILE_EDGE_SCALE = 0.3;
 
 function getEdgeReducer(state: GraphState) {

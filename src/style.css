@@ -537,6 +537,19 @@ body {
   #detail-back .back-text { display: none; }
   #detail-back .back-svg { display: block; width: 16px; height: 16px; }
 
+  #tooltip,
+  #search-input,
+  #search-dropdown,
+  #footer-credit,
+  #detail-panel,
+  .detail-header,
+  #stats-box {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(40, 40, 40, 0.95) !important;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3) !important;
+  }
+
   #search-input {
     width: 240px;
     font-size: 14px;
