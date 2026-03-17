@@ -331,12 +331,12 @@ export function initDetailPanel(state: GraphState) {
     });
 
     docsEl.innerHTML = '<div class="detail-empty">Loading documents…</div>';
-    panel.style.overflowY = "hidden";
     panel.scrollTop = 0;
+    connectionsEl.scrollTop = 0;
+    docsEl.scrollTop = 0;
     cancelCloseTransition();
     panel.classList.add("open");
     if (isMobile()) footer.classList.add("mobile-hidden");
-    requestAnimationFrame(() => { panel.style.overflowY = ""; });
 
     const allDocs = await fetchDocuments();
     const docMap = new Map<
