@@ -212,8 +212,9 @@ export function initDetailPanel(state: GraphState) {
       } else if (dy > 60) {
         requestClose();
       }
-    } else if (touchStartInHeader && dy > 60) {
-      requestClose();
+    } else if (dy > 60) {
+      panel.classList.remove("expanded");
+      searchBar.classList.remove("mobile-hidden");
     }
   }, { passive: true });
 
