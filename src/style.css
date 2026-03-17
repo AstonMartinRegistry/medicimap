@@ -534,7 +534,7 @@ body {
   #footer-credit {
     font-size: 0.7rem;
     padding: 0.4rem 0.6rem;
-    bottom: env(safe-area-inset-bottom, 8px);
+    bottom: calc(16px + env(safe-area-inset-bottom, 0));
   }
 
   #detail-panel {
@@ -566,6 +566,12 @@ body {
 
   #search-bar.mobile-hidden {
     transform: translateX(-50%) translateY(-60px);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  #footer-credit.mobile-hidden {
+    transform: translateX(-50%) translateY(60px);
     opacity: 0;
     pointer-events: none;
   }

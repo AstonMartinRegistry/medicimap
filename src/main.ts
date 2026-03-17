@@ -1,6 +1,6 @@
 import "./style.css";
 import { fetchGraphData, fetchDocuments } from "./data";
-import { buildGraph } from "./graph";
+import { buildGraph, clearHighlight } from "./graph";
 import { initStats, initTooltip, initSearch, initDetailPanel } from "./ui";
 
 async function main() {
@@ -44,6 +44,7 @@ async function main() {
 
   const container = document.getElementById("graph-container")!;
   const state = buildGraph(container, nodes, edges);
+  clearHighlight(state);
 
   setProgress("Initializing…", 90);
   await new Promise((r) => requestAnimationFrame(r));

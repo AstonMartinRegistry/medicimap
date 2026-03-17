@@ -68,8 +68,10 @@ export function initStats(stats: {
 
 export function initTooltip(state: GraphState) {
   const tooltip = document.getElementById("tooltip")!;
+  const isMobile = () => window.matchMedia("(max-width: 768px)").matches;
 
   state.renderer.on("enterNode", ({ node }) => {
+    if (isMobile()) return;
     const attrs = state.graph.getNodeAttributes(node);
     const nodeData = state.nodeById.get(Number(node));
     const isMedici = nodeData?.isMedici ?? false;
@@ -85,7 +87,7 @@ export function initTooltip(state: GraphState) {
   });
 
   state.renderer.getMouseCaptor().on("mousemovebody", (e: any) => {
-    if (tooltip.style.display === "none") return;
+    if (isMobile() || tooltip.style.display === "none") return;
     tooltip.style.left = e.original.clientX + 14 + "px";
     tooltip.style.top = e.original.clientY + 14 + "px";
   });
@@ -210,9 +212,17 @@ export function initDetailPanel(state: GraphState) {
   const history: number[] = [];
   let currentId: number | null = null;
 
+  const footer = document.getElementById("footer-credit")!;
+
+  window.addEventListener("resize", () => {
+    clearHighlight(state);
+    if (currentId !== null) setHighlight(state, String(currentId));
+  });
+
   function close() {
     panel.classList.remove("open", "expanded");
     searchBar.classList.remove("mobile-hidden");
+    if (isMobile()) footer.classList.remove("mobile-hidden");
     clearHighlight(state);
     history.length = 0;
     currentId = null;
@@ -285,6 +295,7 @@ export function initDetailPanel(state: GraphState) {
     panel.style.overflowY = "hidden";
     panel.scrollTop = 0;
     panel.classList.add("open");
+    if (isMobile()) footer.classList.add("mobile-hidden");
     requestAnimationFrame(() => { panel.style.overflowY = ""; });
 
     const allDocs = await fetchDocuments();

@@ -125,6 +125,25 @@ let highlightedNeighbors: Set<string> | null = null;
 const DIM_NODE_COLOR = "#383838";
 const DIM_EDGE_COLOR = "rgb(40, 40, 40)";
 
+const isMobile = () => window.matchMedia("(max-width: 768px)").matches;
+const MOBILE_EDGE_SCALE = 0.45;
+
+function getEdgeReducer(state: GraphState) {
+  return (edge: string, data: { size: number; color: string; zIndex?: number }) => {
+    let size = data.size;
+    if (isMobile()) size *= MOBILE_EDGE_SCALE;
+
+    if (!highlightedNode) return { ...data, size };
+
+    const src = state.graph.source(edge);
+    const tgt = state.graph.target(edge);
+    if (src === highlightedNode || tgt === highlightedNode) {
+      return { ...data, size: Math.max(size, isMobile() ? 14 : 30), zIndex: 1 };
+    }
+    return { ...data, size, color: DIM_EDGE_COLOR, zIndex: 0 };
+  };
+}
+
 export function setHighlight(state: GraphState, nodeKey: string | null) {
   highlightedNode = nodeKey;
 
@@ -143,15 +162,7 @@ export function setHighlight(state: GraphState, nodeKey: string | null) {
     return { ...data, color: DIM_NODE_COLOR, zIndex: 0 };
   });
 
-  state.renderer.setSetting("edgeReducer", (edge, data) => {
-    if (!highlightedNode) return data;
-    const src = state.graph.source(edge);
-    const tgt = state.graph.target(edge);
-    if (src === highlightedNode || tgt === highlightedNode) {
-      return { ...data, size: Math.max(data.size, 30), zIndex: 1 };
-    }
-    return { ...data, color: DIM_EDGE_COLOR, zIndex: 0 };
-  });
+  state.renderer.setSetting("edgeReducer", getEdgeReducer(state));
 
   state.renderer.refresh();
 }
@@ -160,7 +171,15 @@ export function clearHighlight(state: GraphState) {
   highlightedNode = null;
   highlightedNeighbors = null;
   state.renderer.setSetting("nodeReducer", null);
-  state.renderer.setSetting("edgeReducer", null);
+  state.renderer.setSetting(
+    "edgeReducer",
+    isMobile()
+      ? (edge: string, data: { size: number }) => ({
+          ...data,
+          size: data.size * MOBILE_EDGE_SCALE,
+        })
+      : null
+  );
   state.renderer.refresh();
 }
 
