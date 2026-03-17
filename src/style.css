@@ -182,7 +182,6 @@ body {
   font-weight: 400;
   color: var(--ui-text);
   letter-spacing: 0.01em;
-  margin-bottom: 1rem;
 }
 
 #stats-content {
@@ -191,6 +190,7 @@ body {
   gap: 6px;
   color: var(--ui-muted);
   font-size: var(--ui-font-size);
+  padding-top: 1rem;
 }
 #stats-content .stat-sub {
   font-size: 0.9em;
@@ -524,4 +524,12 @@ body {
 #detail-panel::-webkit-scrollbar-thumb:hover,
 #search-dropdown::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 768px) {
+  #sidebar {
+    display: none;
+  }
 }
