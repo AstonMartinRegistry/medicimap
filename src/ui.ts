@@ -148,7 +148,7 @@ export function initSearch(state: GraphState, onSelect: (nodeId: number) => void
     }
   });
 
-  dropdown.addEventListener("mousedown", (e) => {
+  function selectItem(e: Event) {
     const item = (e.target as HTMLElement).closest(".search-item") as HTMLElement;
     if (!item) return;
     e.preventDefault();
@@ -161,7 +161,9 @@ export function initSearch(state: GraphState, onSelect: (nodeId: number) => void
       flyToNode(state, String(id));
       onSelect(id);
     }
-  });
+  }
+  dropdown.addEventListener("mousedown", selectItem);
+  dropdown.addEventListener("touchend", selectItem);
 
   if (isMobile()) {
     let lastVpH = (window.visualViewport?.height ?? window.innerHeight);
