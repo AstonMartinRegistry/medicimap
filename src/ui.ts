@@ -235,12 +235,13 @@ export function initDetailPanel(state: GraphState) {
 
   function requestClose() {
     if (isMobile()) {
+      if (panel.classList.contains("closing")) return;
       cancelCloseTransition();
       panel.classList.add("closing");
       closeTransitionHandler = () => {
         panel.removeEventListener("transitionend", closeTransitionHandler!);
         closeTransitionHandler = null;
-        close();
+        if (panel.classList.contains("closing")) close();
       };
       panel.addEventListener("transitionend", closeTransitionHandler);
     } else {
@@ -387,7 +388,7 @@ export function initDetailPanel(state: GraphState) {
     }
   }
 
-  closeBtn.addEventListener("click", requestClose);
+  closeBtn.addEventListener("click", () => close());
   backBtn.addEventListener("click", () => {
     if (history.length > 0) {
       const prev = history.pop()!;
