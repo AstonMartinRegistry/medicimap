@@ -176,11 +176,25 @@ export function initDetailPanel(state: GraphState) {
   const backBtn = document.getElementById("detail-back")!;
   const closeBtn = document.getElementById("detail-close")!;
 
+  const isMobile = () => window.matchMedia("(max-width: 768px)").matches;
+  const searchBar = document.getElementById("search-bar")!;
+
+  panel.addEventListener("scroll", () => {
+    if (isMobile() && panel.classList.contains("open") && !panel.classList.contains("expanded")) {
+      if (panel.scrollTop > 10) {
+        panel.classList.add("expanded");
+        panel.scrollTop = 0;
+        searchBar.classList.add("mobile-hidden");
+      }
+    }
+  });
+
   const history: number[] = [];
   let currentId: number | null = null;
 
   function close() {
-    panel.classList.remove("open");
+    panel.classList.remove("open", "expanded");
+    searchBar.classList.remove("mobile-hidden");
     clearHighlight(state);
     history.length = 0;
     currentId = null;
