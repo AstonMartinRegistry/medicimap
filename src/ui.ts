@@ -182,37 +182,58 @@ export function initDetailPanel(state: GraphState) {
   const searchBar = document.getElementById("search-bar")!;
 
   let touchStartY = 0;
+  let touchStartInHeader = false;
+  const headerEl = panel.querySelector(".detail-header")!;
   panel.addEventListener("touchstart", (e) => {
     touchStartY = e.touches[0].clientY;
+    touchStartInHeader = headerEl.contains(e.target as Node);
   }, { passive: true });
 
   panel.addEventListener("touchend", (e) => {
     if (!isMobile() || !panel.classList.contains("open")) return;
     const dy = e.changedTouches[0].clientY - touchStartY;
-    if (!panel.classList.contains("expanded") && dy < -30) {
-      panel.classList.add("expanded");
-      searchBar.classList.add("mobile-hidden");
-    } else if (panel.classList.contains("expanded") && dy > 60 && panel.scrollTop <= 0) {
-      close();
-    } else if (!panel.classList.contains("expanded") && dy > 60) {
-      close();
+    if (!panel.classList.contains("expanded")) {
+      if (dy < -30) {
+        panel.classList.add("expanded");
+        searchBar.classList.add("mobile-hidden");
+      } else if (dy > 60) {
+        requestClose();
+      }
+    } else if (touchStartInHeader && dy > 60) {
+      requestClose();
     }
   }, { passive: true });
 
-  panel.addEventListener("scroll", () => {
-    if (isMobile() && panel.classList.contains("open") && !panel.classList.contains("expanded")) {
-      if (panel.scrollTop > 10) {
-        panel.classList.add("expanded");
-        panel.scrollTop = 0;
-        searchBar.classList.add("mobile-hidden");
-      }
-    }
-  });
 
   const history: number[] = [];
   let currentId: number | null = null;
 
   const footer = document.getElementById("footer-credit")!;
+
+  let closeTransitionHandler: (() => void) | null = null;
+
+  function cancelCloseTransition() {
+    if (closeTransitionHandler) {
+      panel.removeEventListener("transitionend", closeTransitionHandler);
+      closeTransitionHandler = null;
+    }
+    panel.classList.remove("closing");
+  }
+
+  function requestClose() {
+    if (isMobile()) {
+      cancelCloseTransition();
+      panel.classList.add("closing");
+      closeTransitionHandler = () => {
+        panel.removeEventListener("transitionend", closeTransitionHandler!);
+        closeTransitionHandler = null;
+        close();
+      };
+      panel.addEventListener("transitionend", closeTransitionHandler);
+    } else {
+      close();
+    }
+  }
 
   window.addEventListener("resize", () => {
     clearHighlight(state);
@@ -220,7 +241,8 @@ export function initDetailPanel(state: GraphState) {
   });
 
   function close() {
-    panel.classList.remove("open", "expanded");
+    cancelCloseTransition();
+    panel.classList.remove("open", "expanded", "closing");
     searchBar.classList.remove("mobile-hidden");
     if (isMobile()) footer.classList.remove("mobile-hidden");
     clearHighlight(state);
@@ -294,6 +316,7 @@ export function initDetailPanel(state: GraphState) {
     docsEl.innerHTML = '<div class="detail-empty">Loading documents…</div>';
     panel.style.overflowY = "hidden";
     panel.scrollTop = 0;
+    cancelCloseTransition();
     panel.classList.add("open");
     if (isMobile()) footer.classList.add("mobile-hidden");
     requestAnimationFrame(() => { panel.style.overflowY = ""; });
@@ -351,7 +374,7 @@ export function initDetailPanel(state: GraphState) {
     }
   }
 
-  closeBtn.addEventListener("click", close);
+  closeBtn.addEventListener("click", requestClose);
   backBtn.addEventListener("click", () => {
     if (history.length > 0) {
       const prev = history.pop()!;
