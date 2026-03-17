@@ -179,6 +179,24 @@ export function initDetailPanel(state: GraphState) {
   const isMobile = () => window.matchMedia("(max-width: 768px)").matches;
   const searchBar = document.getElementById("search-bar")!;
 
+  let touchStartY = 0;
+  panel.addEventListener("touchstart", (e) => {
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  panel.addEventListener("touchend", (e) => {
+    if (!isMobile() || !panel.classList.contains("open")) return;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (!panel.classList.contains("expanded") && dy < -30) {
+      panel.classList.add("expanded");
+      searchBar.classList.add("mobile-hidden");
+    } else if (panel.classList.contains("expanded") && dy > 60 && panel.scrollTop <= 0) {
+      close();
+    } else if (!panel.classList.contains("expanded") && dy > 60) {
+      close();
+    }
+  }, { passive: true });
+
   panel.addEventListener("scroll", () => {
     if (isMobile() && panel.classList.contains("open") && !panel.classList.contains("expanded")) {
       if (panel.scrollTop > 10) {
