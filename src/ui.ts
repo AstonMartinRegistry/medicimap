@@ -127,6 +127,8 @@ export function initSearch(state: GraphState, onSelect: (nodeId: number) => void
   }
 
   const tooltip = document.getElementById("tooltip")!;
+  const isMobile = () => window.matchMedia("(max-width: 768px)").matches;
+
   input.addEventListener("focus", () => {
     tooltip.style.display = "none";
     render(input.value);
@@ -160,6 +162,17 @@ export function initSearch(state: GraphState, onSelect: (nodeId: number) => void
       onSelect(id);
     }
   });
+
+  if (isMobile()) {
+    let lastVpH = (window.visualViewport?.height ?? window.innerHeight);
+    window.visualViewport?.addEventListener("resize", () => {
+      const vpH = window.visualViewport?.height ?? window.innerHeight;
+      if (vpH > lastVpH && document.activeElement === input) {
+        input.blur();
+      }
+      lastVpH = vpH;
+    });
+  }
 }
 
 // ─── Detail Panel ───

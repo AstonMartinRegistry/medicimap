@@ -531,9 +531,22 @@ body {
 @media (max-width: 768px) {
   #sidebar { display: none; }
 
+  #search-input {
+    width: 240px;
+    font-size: 12px;
+    transition: none;
+  }
+  #search-input:focus {
+    width: 240px;
+  }
+  #search-icon {
+    width: 12px;
+    height: 12px;
+  }
+
   #footer-credit {
-    font-size: 0.7rem;
-    padding: 0.4rem 0.6rem;
+    font-size: 12px;
+    padding: 0.4rem 1rem;
     bottom: calc(16px + env(safe-area-inset-bottom, 0));
   }
 
