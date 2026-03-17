@@ -129,8 +129,8 @@ const isMobile = () => window.matchMedia("(max-width: 768px)").matches;
 const MOBILE_EDGE_SCALE = 0.45;
 
 function getEdgeReducer(state: GraphState) {
-  return (edge: string, data: { size: number; color: string; zIndex?: number }) => {
-    let size = data.size;
+  return (edge: string, data: Record<string, unknown>) => {
+    let size = (data.size as number) ?? 0;
     if (isMobile()) size *= MOBILE_EDGE_SCALE;
 
     if (!highlightedNode) return { ...data, size };
@@ -174,9 +174,9 @@ export function clearHighlight(state: GraphState) {
   state.renderer.setSetting(
     "edgeReducer",
     isMobile()
-      ? (edge: string, data: { size: number }) => ({
+      ? (edge: string, data: Record<string, unknown>) => ({
           ...data,
-          size: data.size * MOBILE_EDGE_SCALE,
+          size: ((data.size as number) ?? 0) * MOBILE_EDGE_SCALE,
         })
       : null
   );
