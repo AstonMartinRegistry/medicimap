@@ -377,6 +377,7 @@ body {
   transition: color 0.3s ease, background 0.3s ease;
 }
 #detail-back { display: none; }
+#detail-back .back-svg { display: none; }
 #detail-back:hover,
 #detail-close:hover {
   color: var(--ui-text);
@@ -533,6 +534,9 @@ body {
 @media (max-width: 768px) {
   #sidebar { display: none; }
 
+  #detail-back .back-text { display: none; }
+  #detail-back .back-svg { display: block; width: 16px; height: 16px; }
+
   #search-input {
     width: 240px;
     font-size: 14px;
@@ -569,7 +573,7 @@ body {
     flex-direction: column;
   }
   #detail-panel.open {
-    transform: translateX(-50%) translateY(50dvh) !important;
+    transform: translateX(-50%) translateY(70dvh) !important;
   }
   #detail-panel.open.expanded {
     transform: translateX(-50%) translateY(0) !important;

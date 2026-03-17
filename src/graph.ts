@@ -126,7 +126,7 @@ const DIM_NODE_COLOR = "#383838";
 const DIM_EDGE_COLOR = "rgb(40, 40, 40)";
 
 const isMobile = () => window.matchMedia("(max-width: 768px)").matches;
-const MOBILE_EDGE_SCALE = 0.45;
+const MOBILE_EDGE_SCALE = 0.3;
 
 function getEdgeReducer(state: GraphState) {
   return (edge: string, data: Record<string, unknown>) => {
@@ -138,7 +138,7 @@ function getEdgeReducer(state: GraphState) {
     const src = state.graph.source(edge);
     const tgt = state.graph.target(edge);
     if (src === highlightedNode || tgt === highlightedNode) {
-      return { ...data, size: Math.max(size, isMobile() ? 14 : 30), zIndex: 1 };
+      return { ...data, size: Math.max(size, isMobile() ? 10 : 30), zIndex: 1 };
     }
     return { ...data, size, color: DIM_EDGE_COLOR, zIndex: 0 };
   };
